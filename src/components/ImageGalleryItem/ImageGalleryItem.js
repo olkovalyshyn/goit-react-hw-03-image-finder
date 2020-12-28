@@ -1,10 +1,14 @@
 import s from "./ImageGalleryItem.module.css";
 
-function ImageGalleryItem() {
+function ImageGalleryItem({ image }) {
   return (
     <li className={s.ImageGalleryItem}>
       <div>!!!Тест від ImageGalleryItem!!!</div>
-      <img src="" alt="" className={s.ImageGalleryItemImage} />
+      <img
+        src={image.webformatURL}
+        alt=""
+        className={s.ImageGalleryItemImage}
+      />
     </li>
   );
 }
