@@ -14,9 +14,9 @@ function ImageGallery({ images }) {
   // render() {
   return (
     <ul className={s.ImageGallery}>
-      {images.map((image) => (
-        <ImageGalleryItem key={image.key} image={image} />
-      ))}
+      {images.map((image) => {
+        return <ImageGalleryItem key={image.id} image={image} />;
+      })}
       {/* {images.map(({ id, webformatURL }) => (
         <ImageGalleryItem key={id} webformatURL={webformatURL} />
       ))} */}

@@ -5,7 +5,8 @@ async function fetchGallery(name, pageNumber) {
     `https://pixabay.com/api/?q=${name}&page=${pageNumber}&key=19034439-608cc2a9f2617ed99a498289b&image_type=photo&orientation=horizontal&per_page=12`
   );
   const newImages = await response.json();
-
+  // console.log("!!!newImages.hits", newImages.hits);
+  // console.log("!!!newImages", newImages);
   return newImages.hits;
 
   // return fetch(

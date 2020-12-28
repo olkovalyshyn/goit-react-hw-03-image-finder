@@ -1,9 +1,11 @@
 import { Component } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 import ImageGallery from "./components/ImageGallery";
 import Searchbar from "./components/Searchbar";
 import api from "./services/galleryApi";
+import Button from "./components/Button";
 
 // import "./App.css";
 
@@ -11,12 +13,14 @@ class App extends Component {
   state = {
     inputValue: "",
     images: [],
-    status: "idle",
+    // status: "idle",
     pageNumber: 1,
   };
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.inputValue !== this.state.inputValue) {
+      // if (prevState.pageNumber !== this.state.pageNumber)
+      // this.setState({ status: "pending" });
       this.fetchImages();
     }
   }
@@ -24,12 +28,18 @@ class App extends Component {
   fetchImages() {
     const { inputValue, pageNumber } = this.state;
 
-    api.fetchGallery(inputValue, pageNumber).then((img) =>
+    api.fetchGallery(inputValue, pageNumber).then((img) => {
       this.setState({
         images: [...this.state.images, ...img],
         pageNumber: pageNumber,
-      })
-    );
+      });
+
+      // console.log("!!!img.hits", img.hits);
+    });
+    // console.log("!!!api.fetchGallery", api.fetchGallery());
+    // console.log("!!! this.state.images", this.state.images);
+
+    // console.log("!!!this.images", this.images);
   }
   // if (prevState.inputValue !== this.state.inputValue) {
   //   this.setState({ status: "pending" });
@@ -80,28 +90,30 @@ class App extends Component {
     this.setState({ inputValue: value });
   };
 
+  loadMore = () => {
+    this.setState((prevState) => ({ pageNumber: prevState.pageNumber + 1 }));
+  };
+
   render() {
     // if (this.state.status === "idle") {
     //   return <div>Введіть дані для пошуку.</div>;
     // }
 
-    if (this.state.status === "pending") {
-      return <h1>ЗАВАНТАЖУЮ...</h1>;
-    }
+    // if (this.state.status === "pending") {
+    //   return <h1>ЗАВАНТАЖУЮ...</h1>;
+    // }
 
-    if (this.state.status === "rejected") {
-      return <h1>{this.state.error.message}</h1>;
-    }
-
-    if (this.state.status === "resolved") {
-      return <ImageGallery images={this.images} />;
-      // <p>Тут маэ бути малюнок{this.state.images}</p>;
-    }
+    // if (this.state.status === "rejected") {
+    //   return <h1>{this.state.error.message}</h1>;
+    // }
 
     return (
       <>
         <Searchbar onSubmit={this.incomingValueFromInput} />
-        {/* <ImageGallery inputValue={this.state.inputValue} /> */}
+        {/* if (this.state.status === "pending") */}
+        {this.state.inputValue && <ImageGallery images={this.state.images} />}
+
+        <Button onClickButton={this.loadMore} />
         <ToastContainer
           position="top-center"
           autoClose={3000}
