@@ -13,15 +13,25 @@ class App extends Component {
   state = {
     inputValue: "",
     images: [],
-    // status: "idle",
+    status: "idle",
     pageNumber: 1,
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.inputValue !== this.state.inputValue) {
+    if (
+      prevState.inputValue !== this.state.inputValue ||
+      prevState.pageNumber !== this.state.pageNumber
+    ) {
       // if (prevState.pageNumber !== this.state.pageNumber)
       // this.setState({ status: "pending" });
       this.fetchImages();
+    }
+
+    if (prevState.pageNumber !== this.state.pageNumber) {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: "smooth",
+      });
     }
   }
 
@@ -113,7 +123,9 @@ class App extends Component {
         {/* if (this.state.status === "pending") */}
         {this.state.inputValue && <ImageGallery images={this.state.images} />}
 
-        <Button onClickButton={this.loadMore} />
+        {this.state.images.length > 0 && (
+          <Button onClickButton={this.loadMore} />
+        )}
         <ToastContainer
           position="top-center"
           autoClose={3000}
