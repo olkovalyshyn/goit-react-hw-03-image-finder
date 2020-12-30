@@ -2,10 +2,13 @@ import { Component } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import Loader from "react-loader-spinner";
+
 import ImageGallery from "./components/ImageGallery";
 import Searchbar from "./components/Searchbar";
 import api from "./services/galleryApi";
 import Button from "./components/Button";
+import Modal from "./components/Modal";
 
 // import "./App.css";
 
@@ -15,6 +18,8 @@ class App extends Component {
     images: [],
     status: "idle",
     pageNumber: 1,
+    isloading: false,
+    showModal: false,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -22,34 +27,33 @@ class App extends Component {
       prevState.inputValue !== this.state.inputValue ||
       prevState.pageNumber !== this.state.pageNumber
     ) {
-      // if (prevState.pageNumber !== this.state.pageNumber)
-      // this.setState({ status: "pending" });
-      this.fetchImages();
+      this.setState({ isloading: true });
+      // setTimeout for a test (visible) compoent Loader
+      setTimeout(() => {
+        this.fetchImages();
+      }, 1000);
     }
 
-    if (prevState.pageNumber !== this.state.pageNumber) {
-      window.scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: "smooth",
-      });
-    }
+    // if (prevState.pageNumber !== this.state.pageNumber) {
+    //   window.scrollTo({
+    //     top: document.documentElement.scrollHeight,
+    //     behavior: "smooth",
+    //   });
+    // }
   }
 
   fetchImages() {
     const { inputValue, pageNumber } = this.state;
 
-    api.fetchGallery(inputValue, pageNumber).then((img) => {
-      this.setState({
-        images: [...this.state.images, ...img],
-        pageNumber: pageNumber,
-      });
-
-      // console.log("!!!img.hits", img.hits);
-    });
-    // console.log("!!!api.fetchGallery", api.fetchGallery());
-    // console.log("!!! this.state.images", this.state.images);
-
-    // console.log("!!!this.images", this.images);
+    api
+      .fetchGallery(inputValue, pageNumber)
+      .then((img) => {
+        this.setState({
+          images: [...this.state.images, ...img],
+          pageNumber: pageNumber,
+        });
+      })
+      .finally(this.setState({ isloading: false }));
   }
   // if (prevState.inputValue !== this.state.inputValue) {
   //   this.setState({ status: "pending" });
@@ -102,11 +106,27 @@ class App extends Component {
 
   loadMore = () => {
     this.setState((prevState) => ({ pageNumber: prevState.pageNumber + 1 }));
+    this.hundleScrollTo();
+  };
+
+  hundleScrollTo = () => {
+    setTimeout(() => {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: "smooth",
+      });
+    }, 1000);
+  };
+
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+    }));
   };
 
   render() {
     // if (this.state.status === "idle") {
-    //   return <div>Введіть дані для пошуку.</div>;
+    //   return <div>Enter your request</div>;
     // }
 
     // if (this.state.status === "pending") {
@@ -117,15 +137,30 @@ class App extends Component {
     //   return <h1>{this.state.error.message}</h1>;
     // }
 
+    // if (this.state.status === "resolved") {
+    //   return <ImageGallery images={this.state.images};
+    // }
+
     return (
       <>
         <Searchbar onSubmit={this.incomingValueFromInput} />
         {/* if (this.state.status === "pending") */}
-        {this.state.inputValue && <ImageGallery images={this.state.images} />}
-
+        {this.state.inputValue && (
+          <ImageGallery
+            images={this.state.images}
+            onToggleModal={this.toggleModal}
+          />
+        )}
         {this.state.images.length > 0 && (
           <Button onClickButton={this.loadMore} />
         )}
+
+        {this.state.isloading && (
+          <Loader type="ThreeDots" color="#00BFFF" height={80} width={80} />
+        )}
+
+        {this.state.showModal && <Modal onClose={this.toggleModal} />}
+
         <ToastContainer
           position="top-center"
           autoClose={3000}
