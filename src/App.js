@@ -20,6 +20,7 @@ class App extends Component {
     pageNumber: 1,
     isloading: false,
     showModal: false,
+    largeImage: {},
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -118,11 +119,17 @@ class App extends Component {
     }, 1000);
   };
 
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({
+  toggleModal = (event) => {
+    this.setState(({ showModal, largeImage }) => ({
       showModal: !showModal,
+      largeImage: event.target.dataset,
     }));
+    console.log("!!!this.state.largeImage", this.state.largeImage);
   };
+
+  // addLargeImgForModal = (event) => {
+  //   console.log("!!!ВЕЛИКЕ зображення модалки", event.target.dataset);
+  // };
 
   render() {
     // if (this.state.status === "idle") {
@@ -159,7 +166,11 @@ class App extends Component {
           <Loader type="ThreeDots" color="#00BFFF" height={80} width={80} />
         )}
 
-        {this.state.showModal && <Modal onClose={this.toggleModal} />}
+        {this.state.showModal && (
+          <Modal onClose={this.toggleModal}>
+            <img src={this.state.largeImage} alt="" />
+          </Modal>
+        )}
 
         <ToastContainer
           position="top-center"

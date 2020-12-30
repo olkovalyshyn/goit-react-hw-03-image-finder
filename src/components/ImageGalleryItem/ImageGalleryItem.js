@@ -6,6 +6,7 @@ function ImageGalleryItem({ image, onToggleModal }) {
       <img
         onClick={onToggleModal}
         src={image.webformatURL}
+        data-large-img-for-modal={image.largeImageURL}
         alt=""
         className={s.ImageGalleryItemImage}
       />
