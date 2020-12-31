@@ -1,10 +1,10 @@
 import s from "./ImageGalleryItem.module.css";
 
-function ImageGalleryItem({ image, onToggleModal }) {
+function ImageGalleryItem({ image, onOpenModal }) {
   return (
     <li className={s.ImageGalleryItem}>
       <img
-        onClick={onToggleModal}
+        onClick={onOpenModal}
         src={image.webformatURL}
         data-large-img-for-modal={image.largeImageURL}
         alt=""

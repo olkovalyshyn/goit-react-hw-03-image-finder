@@ -10,13 +10,10 @@ import api from "./services/galleryApi";
 import Button from "./components/Button";
 import Modal from "./components/Modal";
 
-// import "./App.css";
-
 class App extends Component {
   state = {
     inputValue: "",
     images: [],
-    status: "idle",
     pageNumber: 1,
     isloading: false,
     showModal: false,
@@ -29,18 +26,12 @@ class App extends Component {
       prevState.pageNumber !== this.state.pageNumber
     ) {
       this.setState({ isloading: true });
-      // setTimeout for a test (visible) compoent Loader
+
+      // setTimeout for a test (visible) component Loader
       setTimeout(() => {
         this.fetchImages();
       }, 1000);
     }
-
-    // if (prevState.pageNumber !== this.state.pageNumber) {
-    //   window.scrollTo({
-    //     top: document.documentElement.scrollHeight,
-    //     behavior: "smooth",
-    //   });
-    // }
   }
 
   fetchImages() {
@@ -102,7 +93,7 @@ class App extends Component {
   // }
 
   incomingValueFromInput = (value) => {
-    this.setState({ inputValue: value });
+    this.setState({ inputValue: value, pageNumber: 1, images: [] });
   };
 
   loadMore = () => {
@@ -116,20 +107,19 @@ class App extends Component {
         top: document.documentElement.scrollHeight,
         behavior: "smooth",
       });
-    }, 1000);
+    }, 2500);
   };
 
-  toggleModal = (event) => {
-    this.setState(({ showModal, largeImage }) => ({
-      showModal: !showModal,
-      largeImage: event.target.dataset,
-    }));
-    console.log("!!!this.state.largeImage", this.state.largeImage);
+  openModal = (event) => {
+    this.setState({
+      showModal: true,
+      largeImage: event.target.dataset.largeImgForModal,
+    });
   };
 
-  // addLargeImgForModal = (event) => {
-  //   console.log("!!!ВЕЛИКЕ зображення модалки", event.target.dataset);
-  // };
+  closeModal = () => {
+    this.setState({ showModal: false });
+  };
 
   render() {
     // if (this.state.status === "idle") {
@@ -151,13 +141,14 @@ class App extends Component {
     return (
       <>
         <Searchbar onSubmit={this.incomingValueFromInput} />
-        {/* if (this.state.status === "pending") */}
+
         {this.state.inputValue && (
           <ImageGallery
             images={this.state.images}
-            onToggleModal={this.toggleModal}
+            onOpenModal={this.openModal}
           />
         )}
+
         {this.state.images.length > 0 && (
           <Button onClickButton={this.loadMore} />
         )}
@@ -167,7 +158,7 @@ class App extends Component {
         )}
 
         {this.state.showModal && (
-          <Modal onClose={this.toggleModal}>
+          <Modal onClose={this.closeModal}>
             <img src={this.state.largeImage} alt="" />
           </Modal>
         )}

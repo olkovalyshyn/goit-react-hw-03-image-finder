@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import ImageGalleryItem from "../ImageGalleryItem";
 import s from "./ImageGallery.module.css";
 
-function ImageGallery({ images, onToggleModal }) {
+function ImageGallery({ images, onOpenModal }) {
   return (
     <ul className={s.ImageGallery}>
       {images.map((image) => {
@@ -11,7 +11,7 @@ function ImageGallery({ images, onToggleModal }) {
           <ImageGalleryItem
             key={image.id}
             image={image}
-            onToggleModal={onToggleModal}
+            onOpenModal={onOpenModal}
           />
         );
       })}
